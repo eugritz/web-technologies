@@ -1,0 +1,6 @@
+DELETE Cars;
+DELETE Dealers;
+DELETE DealerCars;
+
+DBCC CHECKIDENT ('Cars', RESEED, 0)
+DBCC CHECKIDENT ('Dealers', RESEED, 0)
