@@ -1,0 +1,9 @@
+version: "2.1"
+services:
+  rabbitmq:
+    hostname: rabbitmq
+    restart: always
+    image: rabbitmq:3-management
+    ports:
+      - 15672:15672
+      - 5672:5672

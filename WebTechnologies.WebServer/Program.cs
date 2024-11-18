@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using RabbitMQ.Client;
 using WebTechnologies.Data;
 
 namespace WebTechnologies.WebServer
@@ -11,8 +12,17 @@ namespace WebTechnologies.WebServer
             builder.Services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=WebTechnologies;"));
 
+            {
+                var factory = new ConnectionFactory
+                {
+                    HostName = "localhost",
+                };
+                builder.Services.AddScoped((provider) => factory.CreateConnection());
+            }
+
             // Register repositores
-            builder.Services.AddScoped<ICarRepository, CarRepository>();
+            builder.Services.AddScoped<Data.CarRepository>();
+            builder.Services.AddScoped<ICarRepository, RabbitMQ.CarRepository>();
             builder.Services.AddScoped<IDealerRepository, DealerRepository>();
 
             builder.Services.AddControllers();
