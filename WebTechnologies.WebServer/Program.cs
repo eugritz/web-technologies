@@ -10,12 +10,16 @@ namespace WebTechnologies.WebServer
         {
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<DataContext>(options =>
-                options.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=WebTechnologies;"));
+            {
+                options.UseSqlServer(
+                    $"Data Source={builder.Configuration["SqlServer_DataSource"]};" +
+                    $"Initial Catalog={builder.Configuration["SqlServer_InitialCatalog"]};");
+            });
 
             {
                 var factory = new ConnectionFactory
                 {
-                    HostName = "localhost",
+                    HostName = builder.Configuration["RabbitMQ_HostName"],
                 };
                 builder.Services.AddScoped((provider) => factory.CreateConnection());
             }

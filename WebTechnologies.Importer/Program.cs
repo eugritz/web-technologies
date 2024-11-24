@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using WebTechnologies.Data;
 
 namespace WebTechnologies.Importer
@@ -7,8 +8,14 @@ namespace WebTechnologies.Importer
     {
         static void Main(string[] args)
         {
+            var builder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .Build();
+
             var options = new DbContextOptionsBuilder<DataContext>()
-                .UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=WebTechnologies;")
+                .UseSqlServer(
+                    $"Data Source={builder["SqlServer_DataSource"]};" +
+                    $"Initial Catalog={builder["SqlServer_InitialCatalog"]};")
                 .Options;
 
             using (var context = new DataContext(options))

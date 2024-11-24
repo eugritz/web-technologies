@@ -10,6 +10,7 @@
   <ItemGroup>
     <ProjectReference Include="..\WebTechnologies.Core\WebTechnologies.Core.csproj" />
     <ProjectReference Include="..\WebTechnologies.Data\WebTechnologies.Data.csproj" />
+    <ProjectReference Include="..\WebTechnologies.WebServer\WebTechnologies.WebServer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
