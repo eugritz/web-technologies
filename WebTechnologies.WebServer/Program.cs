@@ -25,8 +25,8 @@ namespace WebTechnologies.WebServer
             }
 
             // Register repositores
-            builder.Services.AddScoped<Data.CarRepository>();
-            builder.Services.AddScoped<ICarRepository, RabbitMQ.CarRepository>();
+            builder.Services.AddScoped<CarRepository>();
+            builder.Services.AddScoped<ICarRepository, Data.RabbitMQ.CarRepository>();
             builder.Services.AddScoped<IDealerRepository, DealerRepository>();
 
             builder.Services.AddControllers();

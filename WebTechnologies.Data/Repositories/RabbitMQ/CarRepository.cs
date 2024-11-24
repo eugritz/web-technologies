@@ -1,11 +1,9 @@
 ﻿using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System.Text;
-using System.Text.Json.Serialization;
 using WebTechnologies.Core;
-using WebTechnologies.Data;
 
-namespace WebTechnologies.WebServer.RabbitMQ
+namespace WebTechnologies.Data.RabbitMQ
 {
     public class CarRepository : ICarRepository
     {
