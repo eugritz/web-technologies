@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RabbitMQ.Client;
 using WebTechnologies.Data;
+using WebTechnologies.Data.Decorators;
 
 namespace WebTechnologies.WebServer
 {
@@ -26,7 +27,7 @@ namespace WebTechnologies.WebServer
 
             // Register repositores
             builder.Services.AddScoped<CarRepository>();
-            builder.Services.AddScoped<ICarRepository, Data.RabbitMQ.CarRepository>();
+            builder.Services.AddScoped<ICarRepository, RabbitMQCarRepository>();
             builder.Services.AddScoped<IDealerRepository, DealerRepository>();
 
             builder.Services.AddControllers();

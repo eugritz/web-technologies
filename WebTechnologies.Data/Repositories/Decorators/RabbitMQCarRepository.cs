@@ -3,16 +3,16 @@ using RabbitMQ.Client;
 using System.Text;
 using WebTechnologies.Core;
 
-namespace WebTechnologies.Data.RabbitMQ
+namespace WebTechnologies.Data.Decorators
 {
-    public class CarRepository : ICarRepository
+    public class RabbitMQCarRepository : ICarRepository
     {
         private readonly ICarRepository _repository;
 
         private readonly IConnection _connection;
         private readonly IModel _model;
 
-        public CarRepository(Data.CarRepository repository, IConnection connection)
+        public RabbitMQCarRepository(CarRepository repository, IConnection connection)
         {
             _repository = repository;
             _connection = connection;
