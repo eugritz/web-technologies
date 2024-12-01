@@ -1,0 +1,36 @@
+@use 'assets/css/breakpoints' as *;
+@use 'assets/css/theme';
+
+@font-face {
+  font-family: 'Prosto One', serif;
+  src: url(assets/fonts/Prosto_One/ProstoOne-Regular.ttf);
+}
+
+html {
+  font-family: sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  @include media-breakpoint-up(sm) {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  h1 {
+    padding-left: 1rem;
+    color: theme.$primary;
+
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+}
+
+h1 {
+  font-family: 'Prosto One';
+  font-size: 2rem;
+}

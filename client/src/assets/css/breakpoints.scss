@@ -1,0 +1,39 @@
+@mixin media-breakpoint-down($class) {
+  $dim: 0;
+
+  @if $class == sm {
+    $dim: 576px;
+  } @else if $class == md {
+    $dim: 768px;
+  } @else if $class == lg {
+    $dim: 992px;
+  } @else if $class == xl {
+    $dim: 1200px;
+  } @else if $class == xxl {
+    $dim: 1400px;
+  }
+
+  @media only screen and (max-width: $dim) {
+    @content;
+  }
+}
+
+@mixin media-breakpoint-up($class) {
+  $dim: 0;
+
+  @if $class == sm {
+    $dim: 576px;
+  } @else if $class == md {
+    $dim: 768px;
+  } @else if $class == lg {
+    $dim: 992px;
+  } @else if $class == xl {
+    $dim: 1200px;
+  } @else if $class == xxl {
+    $dim: 1400px;
+  }
+
+  @media only screen and (min-width: $dim) {
+    @content;
+  }
+}
