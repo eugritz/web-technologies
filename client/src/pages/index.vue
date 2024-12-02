@@ -1,21 +1,31 @@
-<script lang="ts">
+<script setup lang="ts">
 import CarCard from '~/components/CarCard.vue';
+import type Car from '~/types/Car';
+
+const car: Car = {
+  firm: "Skoda",
+  model: "Rapid",
+  color: "Silver",
+  power: 999,
+  price: 999,
+  year: 2015,
+};
 </script>
 
 <template>
   <main>
-    <h1>Каталог</h1>
+    <h1>
+      Каталог
+      <h1 class="shadow" aria-hidden="true">Каталог</h1>
+    </h1>
     <div class="car-catalog">
-      <CarCard />
-      <CarCard />
-      <CarCard />
-      <CarCard />
+      <CarCard :car="car" />
     </div>
   </main>
 </template>
 
 <style lang="scss" scoped>
-@use 'assets/css/breakpoints' as *;
+@use 'assets/scss/breakpoints' as *;
 
 .car-catalog {
   padding: 1rem;

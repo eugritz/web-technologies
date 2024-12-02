@@ -17,8 +17,8 @@
 </template>
 
 <style lang="scss" scoped>
-@use 'assets/css/breakpoints' as *;
-@use 'assets/css/theme';
+@use 'assets/scss/breakpoints' as *;
+@use 'assets/scss/theme';
 
 nav {
   $padding-x: 1rem;

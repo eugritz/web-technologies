@@ -1,5 +1,5 @@
-@use 'assets/css/breakpoints' as *;
-@use 'assets/css/theme';
+@use 'assets/scss/breakpoints' as *;
+@use 'assets/scss/theme';
 
 @font-face {
   font-family: 'Prosto One', serif;
@@ -21,12 +21,27 @@ main {
   }
 
   h1 {
+    position: relative;
     padding-left: 1rem;
-    color: theme.$primary;
 
     pointer-events: none;
     user-select: none;
     -webkit-user-select: none;
+
+    color: theme.$primary;
+  }
+
+  h1 .shadow {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    margin: 0;
+    border-radius: 50%;
+
+    color: #00000000;
+    background-color: theme.$primary;
+    opacity: 0.25;
+    filter: blur(10px);
   }
 }
 
