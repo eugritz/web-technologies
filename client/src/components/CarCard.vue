@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import EditIcon from '~/assets/svg/edit.svg';
 import DeleteIcon from '~/assets/svg/delete.svg';
-import type Car from '~/types/Car';
+import type { CarPreview } from '~/types/Car';
 
 defineProps<{
-  car: Car,
+  car: CarPreview,
 }>();
 </script>
 
 <template>
-  <div class="car-catalog__car-card">
+  <div class="car-catalog__list__car-card">
     <div class="car-card__preview">
-      <img src="https://strg1.autovsalone.ru/neofiles/serve-image/5eb917b0279e56099b576a68/1190x500/q90" />
+      <img :src="car.preview" />
       <div class="car-card__preview__title">
         {{ `${$props.car.firm} ${$props.car.model} ${$props.car.year}` }}
       </div>
@@ -33,7 +33,7 @@ defineProps<{
 
 $border-radius: 24px;
 
-.car-catalog__car-card {
+.car-catalog__list__car-card {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -62,8 +62,11 @@ $border-radius: 24px;
 
 .car-card__preview {
   position: relative;
+  height: 100px;
+  border-radius: $border-radius $border-radius 0 0;
   display: flex;
   flex-direction: column-reverse;
+  overflow: hidden;
 
   &::before {
     content: '';
@@ -75,8 +78,9 @@ $border-radius: 24px;
   }
 
   > img {
-    width: 100%;
-    border-radius: $border-radius $border-radius 0 0;
+    // width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 }
 
