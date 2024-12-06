@@ -12,13 +12,19 @@ namespace WebTechnologies.Importer
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            var options = new DbContextOptionsBuilder<DataContext>()
-                .UseSqlServer(
-                    $"Data Source={builder["SqlServer_DataSource"]};" +
-                    $"Initial Catalog={builder["SqlServer_InitialCatalog"]};")
-                .Options;
+            var options = new DbContextOptionsBuilder<DataContext>();
+            if (builder["Database"] == "SqlServer")
+            {
+                options.UseSqlServer(builder.GetConnectionString("SqlServer")
+                    ?? builder.GetConnectionString("Default"));
+            }
+            else if (builder["Database"] == "PostreSQL")
+            {
+                options.UseNpgsql(builder.GetConnectionString("PostreSQL")
+                    ?? builder.GetConnectionString("Default"));
+            }
 
-            using (var context = new DataContext(options))
+            using (var context = new DataContext(options.Options))
             {
                 new DbInitializer(context, new SimpleLogger()).ImportJson();
             }

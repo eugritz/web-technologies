@@ -12,9 +12,16 @@ namespace WebTechnologies.WebServer
             var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddDbContext<DataContext>(options =>
             {
-                options.UseSqlServer(
-                    $"Data Source={builder.Configuration["SqlServer_DataSource"]};" +
-                    $"Initial Catalog={builder.Configuration["SqlServer_InitialCatalog"]};");
+                if (builder.Configuration["Database"] == "SqlServer")
+                {
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")
+                        ?? builder.Configuration.GetConnectionString("Default"));
+                }
+                else if (builder.Configuration["Database"] == "PostreSQL")
+                {
+                    options.UseNpgsql(builder.Configuration.GetConnectionString("PostreSQL")
+                        ?? builder.Configuration.GetConnectionString("Default"));
+                }
             });
 
             {
