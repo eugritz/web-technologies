@@ -16,9 +16,13 @@ namespace WebTechnologies.WebServer.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Car> GetCars()
+        public IEnumerable<Car> GetCars(
+            [FromQuery(Name = "firm")] string? firm = null,
+            [FromQuery(Name = "model")] string? model = null)
         {
-            return _repository.GetCars();
+            return _repository.GetCars().Where(car =>
+                (string.IsNullOrWhiteSpace(firm) || car.Firm.ToLowerInvariant() == firm.ToLowerInvariant())
+                && (string.IsNullOrWhiteSpace(model) || car.Model.ToLowerInvariant() == model.ToLowerInvariant()));
         }
 
         [HttpGet, Route("{id:int}")]
