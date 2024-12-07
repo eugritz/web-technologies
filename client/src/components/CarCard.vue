@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { VueFinalModal } from 'vue-final-modal';
+
 import EditIcon from '~/assets/svg/edit.svg';
 import DeleteIcon from '~/assets/svg/delete.svg';
-import type { CarPreview } from '~/types/Car';
-import { VueFinalModal } from 'vue-final-modal';
+
+import type { Car, CarPreview } from '~/types/Car';
 
 const props = defineProps<{
   car: CarPreview;
@@ -10,13 +12,24 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'afterDelete'): void;
+  (e: 'afterEdit', car: Car): void;
 }>();
 
 const loading = ref(false);
 const deleteOpen = ref(false);
+const editOpen = ref(false);
 const title = computed(() => `${props.car.firm} ${props.car.model} ${props.car.year}`);
 
-const deleteClose = () => {
+const firm = ref('');
+const model = ref('');
+const year = ref('0');
+const power = ref('0');
+const color = ref('');
+const price = ref('0');
+
+const error = ref<string | null>(null);
+
+const closeDelete = () => {
   deleteOpen.value = false;
   loading.value = false;
 };
@@ -29,7 +42,75 @@ const deleteCar = async () => {
     });
     emit("afterDelete");
   } finally {
-    deleteClose();
+    closeDelete();
+  }
+};
+
+const openEdit = () => {
+  editOpen.value = true;
+
+  firm.value = props.car.firm;
+  model.value = props.car.model;
+  year.value = props.car.year.toString();
+  power.value = props.car.power.toString();
+  color.value = props.car.color;
+  price.value = props.car.price.toString();
+};
+
+const closeEdit = () => {
+  editOpen.value = false;
+  loading.value = false;
+  error.value = null;
+
+  firm.value = '';
+  model.value = '';
+  year.value = '0';
+  power.value = '0';
+  color.value = '';
+  price.value = '0';
+};
+
+const editCar = async (e: Event) => {
+  e.preventDefault();
+  try {
+    const validYear = parseInt(year.value, 10);
+    if (isNaN(validYear)) {
+      error.value = "Неправильно задан год!";
+      return;
+    }
+
+    const validPower = parseInt(power.value, 10);
+    if (isNaN(validPower)) {
+      error.value = "Неправильно задана мощность!";
+      return;
+    }
+
+    const validPrice = parseInt(price.value, 10);
+    if (isNaN(validPrice)) {
+      error.value = "Неправильно задана цена!";
+      return;
+    }
+
+    const car: Car = {
+      id: props.car.id,
+      firm: firm.value,
+      model: model.value,
+      year: validYear,
+      power: validPower,
+      color: color.value,
+      price: validPrice,
+    };
+
+    loading.value = true;
+    await $fetch(`/api/cars/${props.car.id}`, {
+      method: "PUT",
+      body: car,
+    });
+
+    emit("afterEdit", car);
+    closeEdit();
+  } catch {
+    closeEdit();
   }
 };
 </script>
@@ -48,28 +129,97 @@ const deleteCar = async () => {
       <button title="Удалить" @click="deleteOpen = true">
         <DeleteIcon />
       </button>
-      <button title="Изменить">
+      <button title="Изменить" @click="openEdit">
         <EditIcon />
       </button>
     </div>
     <div class="car-card__decoration"></div>
-    <VueFinalModal v-model="deleteOpen" class="modal" content-class="modal__content" v-on:closed="deleteClose">
+    <VueFinalModal
+      v-model="deleteOpen"
+      class="modal"
+      content-class="modal__content"
+      v-on:closed="closeDelete"
+    >
       <span>
         Вы уверены, что хотите удалить <b>{{ title }}?</b>
       </span>
-      <div class="controls">
-        <button :disabled="loading" @click="deleteOpen = false">Нет</button>
-        <span style="position: relative; display: flex; justify-content: center;">
-          <Spinner style="position: absolute; margin-top: 1px; margin-right: 1px;" v-if="loading" />
-          <button :style="{ color: '#ff0000', opacity: loading ? '0%' : '100%' }" @click="deleteCar">
+      <div class="modal__controls">
+        <button
+          :disabled="loading"
+          @click="deleteOpen = false"
+        >
+          Нет
+        </button>
+        <span
+          style="position: relative; display: flex; justify-content: center;"
+        >
+          <Spinner
+            style="position: absolute; margin-top: 1px; margin-right: 1px;"
+            v-if="loading"
+          />
+          <button
+            :style="{ color: '#ff0000', opacity: loading ? '0%' : '100%' }"
+            @click="deleteCar"
+          >
             Да
             <DeleteIcon />
           </button>
         </span>
       </div>
     </VueFinalModal>
+    <VueFinalModal
+      v-model="editOpen"
+      class="modal"
+      content-class="modal__content edit-car-modal"
+      v-on:closed="closeEdit"
+    >
+      <form class="edit-car-modal__form" @submit="editCar" @change="error = null">
+        <input v-model="firm" name="firm" type="text" placeholder="Фирма" />
+        <input v-model="model" name="model" type="text" placeholder="Модель" />
+        <input v-model="year" name="year" type="text" placeholder="Год" />
+        <input v-model="power" name="power" type="text" placeholder="Мощность" />
+        <input v-model="color" name="color" type="text" placeholder="Цвет" />
+        <input v-model="price" name="price" type="text" placeholder="Цена" />
+        <span v-if="error !== null" class="form__error">{{ error }}</span>
+        <div class="modal__controls">
+          <button
+            :disabled="loading"
+            type="button"
+            @click="editOpen = false"
+          >
+            Закрыть
+          </button>
+          <span
+            style="position: relative; display: flex; justify-content: center;"
+          >
+            <Spinner
+              style="position: absolute; margin-top: 1px; margin-right: 1px;"
+              v-if="loading"
+            />
+            <button
+              :style="{ opacity: loading ? '0%' : '100%' }"
+              type="submit"
+              @click="editCar"
+            >
+              Изменить
+              <EditIcon />
+            </button>
+          </span>
+        </div>
+      </form>
+    </VueFinalModal>
   </div>
 </template>
+
+<style lang="scss">
+@use 'assets/scss/breakpoints' as *;
+
+.edit-car-modal {
+  @include media-breakpoint-up(sm) {
+    min-width: 400px;
+  }
+}
+</style>
 
 <style lang="scss" scoped>
 @use 'assets/scss/theme';
@@ -170,6 +320,24 @@ $border-radius: 24px;
       flex: 2;
       transition: 0.5s;
     }
+  }
+}
+
+.edit-car-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  input {
+    padding: 0.5rem;
+    border: 3px solid theme.$primary;
+    border-radius: 24px;
+    font-size: 1rem;
+    background-color: #ffffff;
+  }
+
+  .form__error {
+    color: #ff0000;
   }
 }
 </style>

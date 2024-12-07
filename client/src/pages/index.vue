@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CarCard from '~/components/CarCard.vue';
-import type { CarPreview } from '~/types/Car';
+import type { Car, CarPreview } from '~/types/Car';
 
 const images = [
   "https://business-car.ru/upload/resize_cache/iblock/1eb/1500_900_2/mfswzdjcukdcxj94i6wh2sjbjc8ktjyx.jpg",
@@ -38,16 +38,21 @@ const { data: cars } = await useAsyncData(
       }
     );
 
-    const cars = rawCars.map((car) => (<CarPreview>{
-      id: car.id,
-      firm: car.firm,
-      model: car.model,
-      year: car.year,
-      power: car.power,
-      color: car.color,
-      price: car.price,
-      preview: images[Math.floor(Math.random() * images.length)],
-    }));
+    let cars: CarPreview[];
+    try {
+      cars = rawCars.map((car) => (<CarPreview>{
+        id: car.id,
+        firm: car.firm,
+        model: car.model,
+        year: car.year,
+        power: car.power,
+        color: car.color,
+        price: car.price,
+        preview: images[Math.floor(Math.random() * images.length)],
+      }));
+    } catch {
+      cars = [];
+    }
 
     return cars;
   },
@@ -62,6 +67,20 @@ const afterDelete = (carId: number) => {
   const foundCar = cars.value.findIndex((car) => car.id === carId);
   if (foundCar !== -1)
     cars.value.splice(foundCar, 1);
+};
+
+const afterEdit = (car: Car) => {
+  if (!cars.value)
+    return;
+  const foundCar = cars.value.findIndex((car2) => car2.id === car.id);
+  if (foundCar !== -1) {
+    cars.value[foundCar].firm = car.firm;
+    cars.value[foundCar].model = car.model;
+    cars.value[foundCar].year = car.year;
+    cars.value[foundCar].power = car.power;
+    cars.value[foundCar].color = car.color;
+    cars.value[foundCar].price = car.price;
+  }
 };
 </script>
 
@@ -80,6 +99,7 @@ const afterDelete = (carId: number) => {
           v-for="car1 in cars"
           :car="car1"
           @after-delete="afterDelete(car1.id)"
+          @after-edit="afterEdit"
         />
       </div>
       <div class="car-catalog__filter-wrapper">

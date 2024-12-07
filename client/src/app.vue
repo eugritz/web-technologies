@@ -9,9 +9,9 @@ import { ModalsContainer } from 'vue-final-modal';
       <header>
         <nav>
           <ul>
-            <li class="home"><NuxtLink to="/">Главная</NuxtLink></li>
-            <li><NuxtLink to="/">Каталог</NuxtLink></li>
-            <li><NuxtLink to="/">Справка</NuxtLink></li>
+            <li class="home"><a href="/">Главная</a></li>
+            <li><a href="/">Каталог</a></li>
+            <li><a href="/help">Справка</a></li>
           </ul>
         </nav>
       </header>
