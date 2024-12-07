@@ -16,8 +16,8 @@ const emit = defineEmits<{
 }>();
 
 const loading = ref(false);
-const deleteOpen = ref(false);
-const editOpen = ref(false);
+const deleteModalOpen = ref(false);
+const editModalOpen = ref(false);
 const title = computed(() => `${props.car.firm} ${props.car.model} ${props.car.year}`);
 
 const firm = ref('');
@@ -29,8 +29,8 @@ const price = ref('0');
 
 const error = ref<string | null>(null);
 
-const closeDelete = () => {
-  deleteOpen.value = false;
+const closeDeleteModal = () => {
+  deleteModalOpen.value = false;
   loading.value = false;
 };
 
@@ -42,12 +42,12 @@ const deleteCar = async () => {
     });
     emit("afterDelete");
   } finally {
-    closeDelete();
+    closeDeleteModal();
   }
 };
 
-const openEdit = () => {
-  editOpen.value = true;
+const openEditModal = () => {
+  editModalOpen.value = true;
 
   firm.value = props.car.firm;
   model.value = props.car.model;
@@ -57,8 +57,8 @@ const openEdit = () => {
   price.value = props.car.price.toString();
 };
 
-const closeEdit = () => {
-  editOpen.value = false;
+const closeEditModal = () => {
+  editModalOpen.value = false;
   loading.value = false;
   error.value = null;
 
@@ -108,9 +108,9 @@ const editCar = async (e: Event) => {
     });
 
     emit("afterEdit", car);
-    closeEdit();
+    closeEditModal();
   } catch {
-    closeEdit();
+    closeEditModal();
   }
 };
 </script>
@@ -126,19 +126,19 @@ const editCar = async (e: Event) => {
       </div>
     </div>
     <div class="car-card__controls">
-      <button title="Удалить" @click="deleteOpen = true">
+      <button title="Удалить" @click="deleteModalOpen = true">
         <DeleteIcon />
       </button>
-      <button title="Изменить" @click="openEdit">
+      <button title="Изменить" @click="openEditModal">
         <EditIcon />
       </button>
     </div>
     <div class="car-card__decoration"></div>
     <VueFinalModal
-      v-model="deleteOpen"
+      v-model="deleteModalOpen"
       class="modal"
       content-class="modal__content"
-      v-on:closed="closeDelete"
+      v-on:closed="closeDeleteModal"
     >
       <span>
         Вы уверены, что хотите удалить <b>{{ title }}?</b>
@@ -146,7 +146,7 @@ const editCar = async (e: Event) => {
       <div class="modal__controls">
         <button
           :disabled="loading"
-          @click="deleteOpen = false"
+          @click="deleteModalOpen = false"
         >
           Нет
         </button>
@@ -168,10 +168,10 @@ const editCar = async (e: Event) => {
       </div>
     </VueFinalModal>
     <VueFinalModal
-      v-model="editOpen"
+      v-model="editModalOpen"
       class="modal"
       content-class="modal__content edit-car-modal"
-      v-on:closed="closeEdit"
+      v-on:closed="closeEditModal"
     >
       <form class="edit-car-modal__form" @submit="editCar" @change="error = null">
         <input v-model="firm" name="firm" type="text" placeholder="Фирма" />
@@ -185,7 +185,7 @@ const editCar = async (e: Event) => {
           <button
             :disabled="loading"
             type="button"
-            @click="editOpen = false"
+            @click="editModalOpen = false"
           >
             Закрыть
           </button>
