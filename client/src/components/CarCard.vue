@@ -268,6 +268,7 @@ $border-radius: 24px;
     height: 100%;
     border-radius: $border-radius $border-radius 0 0;
     background: linear-gradient(transparent 75%, theme.$primary);
+    z-index: 1;
   }
 }
 
@@ -285,6 +286,7 @@ $border-radius: 24px;
   position: absolute;
   display: flex;
   pointer-events: none;
+  z-index: 2;
 
   font-weight: 500;
   background-color: theme.$secondary;
