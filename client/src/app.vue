@@ -1,3 +1,7 @@
+<script setup lang="ts">
+import { ModalsContainer } from 'vue-final-modal';
+</script>
+
 <template>
   <div>
     <NuxtRouteAnnouncer />
@@ -12,6 +16,7 @@
         </nav>
       </header>
       <NuxtPage />
+      <ModalsContainer />
     </NuxtLayout>
   </div>
 </template>

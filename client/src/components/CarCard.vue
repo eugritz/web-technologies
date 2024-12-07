@@ -2,22 +2,50 @@
 import EditIcon from '~/assets/svg/edit.svg';
 import DeleteIcon from '~/assets/svg/delete.svg';
 import type { CarPreview } from '~/types/Car';
+import { VueFinalModal } from 'vue-final-modal';
 
-defineProps<{
-  car: CarPreview,
+const props = defineProps<{
+  car: CarPreview;
 }>();
+
+const emit = defineEmits<{
+  (e: 'afterDelete'): void;
+}>();
+
+const loading = ref(false);
+const deleteOpen = ref(false);
+const title = computed(() => `${props.car.firm} ${props.car.model} ${props.car.year}`);
+
+const deleteClose = () => {
+  deleteOpen.value = false;
+  loading.value = false;
+};
+
+const deleteCar = async () => {
+  loading.value = true;
+  try {
+    await $fetch(`/api/cars/${props.car.id}`, {
+      method: "DELETE",
+    });
+    emit("afterDelete");
+  } finally {
+    deleteClose();
+  }
+};
 </script>
 
 <template>
   <div class="car-catalog__list__car-card">
     <div class="car-card__preview">
-      <img :src="car.preview" />
+      <div class="car-card__preview__image">
+        <img :src="car.preview" />
+      </div>
       <div class="car-card__preview__title">
-        {{ `${$props.car.firm} ${$props.car.model} ${$props.car.year}` }}
+        {{ title }}
       </div>
     </div>
     <div class="car-card__controls">
-      <button title="Удалить">
+      <button title="Удалить" @click="deleteOpen = true">
         <DeleteIcon />
       </button>
       <button title="Изменить">
@@ -25,6 +53,21 @@ defineProps<{
       </button>
     </div>
     <div class="car-card__decoration"></div>
+    <VueFinalModal v-model="deleteOpen" class="modal" content-class="modal__content" v-on:closed="deleteClose">
+      <span>
+        Вы уверены, что хотите удалить <b>{{ title }}?</b>
+      </span>
+      <div class="controls">
+        <button :disabled="loading" @click="deleteOpen = false">Нет</button>
+        <span style="position: relative; display: flex; justify-content: center;">
+          <Spinner style="position: absolute; margin-top: 1px; margin-right: 1px;" v-if="loading" />
+          <button :style="{ color: '#ff0000', opacity: loading ? '0%' : '100%' }" @click="deleteCar">
+            Да
+            <DeleteIcon />
+          </button>
+        </span>
+      </div>
+    </VueFinalModal>
   </div>
 </template>
 
@@ -76,11 +119,15 @@ $border-radius: 24px;
     border-radius: $border-radius $border-radius 0 0;
     background: linear-gradient(transparent 75%, theme.$primary);
   }
+}
+
+.car-card__preview__image {
+  display: flex;
 
   > img {
-    // width: 100%;
-    height: 100%;
+    width: 100%;
     object-fit: cover;
+    transform: translateY(25%);
   }
 }
 

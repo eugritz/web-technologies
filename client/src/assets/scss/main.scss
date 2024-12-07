@@ -49,3 +49,32 @@ h1 {
   font-family: 'Prosto One';
   font-size: 2rem;
 }
+
+.modal {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal__content {
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-radius: 24px;
+  background-color: #ffffff;
+
+  .controls {
+    min-height: 30px;
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: row-reverse;
+
+    button {
+      padding: 0 1rem;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      background: none;
+    }
+  }
+}

@@ -10,9 +10,11 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "http-proxy": "^1.18.1",
     "nuxt": "^3.14.1592",
     "nuxt-svgo": "^4.0.9",
     "vue": "latest",
+    "vue-final-modal": "^4.5.5",
     "vue-router": "latest"
   },
   "devDependencies": {
